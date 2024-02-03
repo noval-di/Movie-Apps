@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div class="container-fluid no-padding">
+        <button onclick="window.location.href='{% url 'movie_list' %}'">Back</button>
+        <h2>{{ movie.name }}</h2>
+        <p><strong>{{ movie.mpaaRatingType }}</strong> : {{ movie.mpaaRatingLabel }}</p>
+        <img src="{{ movie.imgPath }}" alt="{{ movie.name }} Cover">
+        <p><strong>Details</strong></p>
+        <p>Genre: {{ movie.genre|join:', ' }}</p>
+        <p>Language: {{ movie.language }}</p>
+        <p>Duration: {{ movie.duration }} minutes</p>
+        <p>User Rating: {{ movie.userRating }}</p>
+        <p><strong>Synopsis:</strong></p>
+        <p>{{ movie.description }}</p>
+
+    </div>
+
+    <style>
+    .no-padding {
+    padding-left: 0;
+    padding-right: 0;
+    }
+    </style>
+
+{% endblock %}

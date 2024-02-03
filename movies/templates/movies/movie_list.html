@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div class="container-fluid no-padding">
+        <form action="{% url 'movie_search' %}" method="get" id="searchForm">
+            <input type="text" id="searchInput" name="search" placeholder="Search movies...">
+            <button type="submit">Search</button>
+        </form>
+        
+        <h2>Popular Movies this month</h2>
+        
+        <div id="movies-container"  class="movies-container">
+            <div class="row">
+                {% for movie in movies %}
+                <div class="col-md-3 mb-3">
+                    <div class="movie" data-name="{{ movie.name }}" onclick="redirectToDetail({{ movie.id }})">
+                        <img src="{{ movie.imgPath }}" alt="{{ movie.name }} Cover" style="width: 100%; height: auto; aspect-ratio: 4 / 6;">
+                        <h3>{{ movie.name }}</h3>
+                        <p>{{ movie.duration }} min</p>
+                        <p><strong>User Rating:</strong> {{ movie.userRating }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <style>
+
+    .movie {
+        border: 1px solid #ddd; 
+        padding: 10px; 
+        margin-bottom: 20px; 
+        min-height: 300px;
+        position: initial;
+    }
+    .no-padding {
+    padding-left: 0;
+    padding-right: 0;
+    }
+
+    .ui-autocomplete {
+    position: absolute;
+    float: left;
+    display: none;
+    padding: 4px ;
+    margin: 2px;
+    list-style: none;
+    font-size: 14px;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 4px;
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+}
+
+
+    </style>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#searchInput').autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '/autocomplete/',
+                    data: {
+                        term: request.term
+                    },
+                    success: function (data) {
+                        response(data.suggestions);
+                    }
+                });
+            },
+            minLength: 2,  
+            select: function (event, ui) {
+                $('#searchForm').submit();
+            }
+        });
+    });
+
+    function redirectToDetail(movieId) {
+        window.location.href = `/movie/${movieId}/`;
+    }
+
+    function searchMovies() {
+        var searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+        fetch(`/search/?search=${searchTerm}`)
+            .then(response => response.text())
+            .then(data => {
+                document.querySelector('.movies-container').innerHTML = data;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+</script>
+ 
+
+{% endblock %}

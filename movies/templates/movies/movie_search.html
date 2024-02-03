@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<button onclick="window.location.href='{% url 'movie_list' %}';">Back</button>
+<div class="row">
+    {% for movie in movie %}
+    <div class="col-md-3 mb-3">
+        <div class="movie" data-name="{{ movie.name }}" onclick="redirectToDetail({{ movie.id }})">
+            <img src="{{ movie.imgPath }}" alt="{{ movie.name }} Cover" style="width: 100%; height: auto; aspect-ratio: 4 / 6;">
+            <h3>{{ movie.name }}</h3>
+            <p>{{ movie.duration }} min</p>
+            <p><strong>User Rating:</strong> {{ movie.userRating }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .movie {
+        border: 1px solid #ddd; 
+        padding: 10px; 
+        margin-bottom: 20px; 
+        min-height: 300px;
+        position: initial;
+    }
+    .no-padding {
+    padding-left: 0;
+    padding-right: 0;
+    }
+</style>
+
+<script>
+    function redirectToDetail(movieId) {
+        window.location.href = `/movie/${movieId}/`;
+    }
+</script>
+
+{% endblock %}
